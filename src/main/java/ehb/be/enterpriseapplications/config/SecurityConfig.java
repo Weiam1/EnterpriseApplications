@@ -10,15 +10,19 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf(csrf -> csrf.disable()) // disable CSRF temporarily
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for API usage
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/products/**", "/api/categories/**").permitAll() // allow catalog
-                        .anyRequest().authenticated() // everything else stays protected
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login"
+                        ).permitAll()     // Allow these endpoints
+                        .anyRequest().permitAll() // temporary until we add JWT
                 )
-                .httpBasic(Customizer.withDefaults()); // default temp login
+                .httpBasic(Customizer.withDefaults())
+                .formLogin(form -> form.disable()); // Disable Spring login page
 
         return http.build();
     }
