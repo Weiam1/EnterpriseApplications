@@ -1,7 +1,9 @@
 package ehb.be.enterpriseapplications.controller;
 
+import ehb.be.enterpriseapplications.dto.LoginRequest;
 import ehb.be.enterpriseapplications.dto.UserRegisterRequest;
 import ehb.be.enterpriseapplications.model.User;
+import ehb.be.enterpriseapplications.service.AuthService;
 import ehb.be.enterpriseapplications.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final UserService userService;
+    private final AuthService authService;
+
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterRequest request) {
@@ -29,4 +33,15 @@ public class AuthController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
+            String token = authService.login(request);
+            return ResponseEntity.ok(token);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
+
 }
