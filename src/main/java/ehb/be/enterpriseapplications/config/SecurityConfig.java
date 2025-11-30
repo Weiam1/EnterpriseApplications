@@ -23,14 +23,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/auth/register",
-                                "/api/auth/login",
-                                "/api/products/**",
-                                "/api/categories/**"
-                        ).permitAll()     // public
-                        .anyRequest().authenticated() // everything else is protected
+                        .anyRequest().permitAll()  // TEMPORARY: allow all requests without token
                 )
+
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
