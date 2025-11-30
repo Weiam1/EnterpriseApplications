@@ -28,9 +28,16 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/products/**",
                                 "/api/categories/**"
-                        ).permitAll()     // public
-                        .anyRequest().authenticated() // everything else is protected
+                        ).permitAll() // public
+
+                        .requestMatchers(
+                                "/api/cart/**",
+                                "/api/orders/**"
+                        ).authenticated() // must use token
+
+                        .anyRequest().authenticated()
                 )
+
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
