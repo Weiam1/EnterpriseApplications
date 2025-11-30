@@ -23,7 +23,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()  // TEMPORARY: allow all requests without token
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/products/**",
+                                "/api/categories/**"
+                        ).permitAll() // public
+
+                        .requestMatchers(
+                                "/api/cart/**",
+                                "/api/orders/**"
+                        ).authenticated() // must use token
+
+                        .anyRequest().authenticated()
                 )
 
 
