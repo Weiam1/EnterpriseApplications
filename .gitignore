@@ -1,25 +1,35 @@
+#######################################
+## Backend (Spring Boot + Maven)
+#######################################
+
 HELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
+
+# Allow these target folders inside src
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Spring / IDE cache
+*.log
+*.tmp
 
-### IntelliJ IDEA ###
-.idea
+#######################################
+## IntelliJ IDEA
+#######################################
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+#######################################
+## VS Code
+#######################################
+.vscode/
+
+#######################################
+## NetBeans
+#######################################
 /nbproject/private/
 /nbbuild/
 /dist/
@@ -29,5 +39,32 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
+#######################################
+## Frontend (React + Vite)
+#######################################
+
+# Node modules
+equipment-rental-frontend/node_modules/
+
+# Vite build output
+equipment-rental-frontend/dist/
+equipment-rental-frontend/.vite/
+
+# Environment files
+equipment-rental-frontend/.env
+equipment-rental-frontend/.env.local
+
+# Logs
+equipment-rental-frontend/npm-debug.log*
+equipment-rental-frontend/yarn-debug.log*
+equipment-rental-frontend/yarn-error.log*
+
+# MacOS / Windows system files
+.DS_Store
+Thumbs.db
+
+#######################################
+## Ignore OS garbage everywhere
+#######################################
+.DS_Store
+Thumbs.db
