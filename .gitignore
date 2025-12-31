@@ -45,6 +45,7 @@ build/
 
 # Node modules
 equipment-rental-frontend/node_modules/
+node_modules/
 
 # Vite build output
 equipment-rental-frontend/dist/

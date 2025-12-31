@@ -1,12 +1,13 @@
 import React from "react";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-// TEMPORARY MOCK (remove when AuthContext is added)
-const isAuthenticated = false;
-const logout = () => {};
+
+
 
 const Navbar = () => {
+    const { isAuthenticated, logout } = useAuth();
     return (
         <AppBar position="static" color="primary">
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>

@@ -1,30 +1,46 @@
-import { createContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-    const [token, setToken] = useState(localStorage.getItem("token") || null);
-    const [userId, setUserId] = useState(localStorage.getItem("userId") || null);
+export const AuthProvider = ({ children }) => {
+    const [token, setToken] = useState(() => localStorage.getItem("token") || null);
+    const [userId, setUserId] = useState(() => localStorage.getItem("userId") || null);
 
-    const login = (jwt, id) => {
-        localStorage.setItem("token", jwt);
-        localStorage.setItem("userId", id);
+    // Save token & userId to localStorage when they change
+    useEffect(() => {
+        if (token) {
+            localStorage.setItem("token", token);
+        } else {
+            localStorage.removeItem("token");
+        }
 
-        setToken(jwt);
-        setUserId(id);
+        if (userId) {
+            localStorage.setItem("userId", userId);
+        } else {
+            localStorage.removeItem("userId");
+        }
+    }, [token, userId]);
+
+    const login = (tokenValue, userIdValue) => {
+        setToken(tokenValue);
+        setUserId(userIdValue);
     };
 
     const logout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-
         setToken(null);
         setUserId(null);
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
     };
 
+    const isAuthenticated = !!token;
+
     return (
-        <AuthContext.Provider value={{ token, userId, login, logout }}>
+        <AuthContext.Provider value={{ token, userId, login, logout, isAuthenticated }}>
             {children}
         </AuthContext.Provider>
     );
-}
+};
+
+// Custom hook to access auth anywhere
+export const useAuth = () => useContext(AuthContext);
