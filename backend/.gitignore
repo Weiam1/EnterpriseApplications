@@ -31,8 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+# Node
+node_modules/
+equipment-rental-frontend/node_modules/
 
-frontend/node_modules
-backend/node_modules
+# Frontend build
+equipment-rental-frontend/dist/
 
-.idea/
+# OS
+.DS_Store
