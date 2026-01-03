@@ -13,16 +13,18 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "cart")
+@Table(name = "carts")
 public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // NEW → Cart belongs to 1 user
-    @Column(nullable = false)
-    private Long userId;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+
 
     // List of items inside the cart
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)

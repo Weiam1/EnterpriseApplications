@@ -2,8 +2,10 @@ package ehb.be.enterpriseapplications.controller;
 
 import ehb.be.enterpriseapplications.dto.OrderResponse;
 import ehb.be.enterpriseapplications.model.Order;
+import ehb.be.enterpriseapplications.model.User;
 import ehb.be.enterpriseapplications.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,10 +24,12 @@ public class OrderController {
     }
 
 
-    @GetMapping("/{userId}")
-    public List<OrderResponse> getUserOrders(@PathVariable Long userId) {
-        return orderService.getOrdersByUser(userId);
+    @GetMapping
+    public List<OrderResponse> getUserOrders(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        return orderService.getOrdersByUser(user.getId());
     }
+
 
     private OrderResponse mapToResponse(Order order) {
         return new OrderResponse(
