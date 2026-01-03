@@ -1,5 +1,13 @@
+import { Box, Typography } from "@mui/material";
+
 const Register = () => {
-    return <h2>Register Page</h2>;
+    return (
+        <Box sx={{ padding: 6 }}>
+            <Typography variant="h3" fontWeight="bold">
+                Register Page
+            </Typography>
+        </Box>
+    );
 };
 
 export default Register;

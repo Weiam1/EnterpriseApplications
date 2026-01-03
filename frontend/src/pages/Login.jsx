@@ -1,5 +1,12 @@
 import { useState } from "react";
 import axiosClient from "../api/axiosClient";
+import {
+    Box,
+    Typography,
+    TextField,
+    Button,
+    Paper
+} from "@mui/material";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -30,37 +37,49 @@ const Login = () => {
     };
 
     return (
-        <div style={{ padding: "40px", maxWidth: "400px", margin: "0 auto" }}>
-            <h2>Login</h2>
+        <Box sx={{ padding: 6, maxWidth: 500, margin: "0 auto" }}>
+            <Paper sx={{ padding: 5, borderRadius: "18px" }}>
+                <Typography variant="h3" fontWeight="bold" mb={4}>
+                    Login
+                </Typography>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <input
+                <form onSubmit={handleSubmit}>
+                    <TextField
+                        fullWidth
+                        label="Email"
                         type="email"
-                        placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        required
+                        sx={{ mb: 3 }}
                     />
-                </div>
 
-                <div style={{ marginTop: "10px" }}>
-                    <input
+                    <TextField
+                        fullWidth
+                        label="Password"
                         type="password"
-                        placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        required
+                        sx={{ mb: 4 }}
                     />
-                </div>
 
-                <button style={{ marginTop: "15px" }} type="submit">
-                    Login
-                </button>
-            </form>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        sx={{ fontSize: "18px", paddingY: 1.5 }}
+                    >
+                        Login
+                    </Button>
+                </form>
 
-            {error && <p style={{ color: "red" }}>{error}</p>}
-        </div>
+                {error && (
+                    <Typography color="error" mt={3}>
+                        {error}
+                    </Typography>
+                )}
+            </Paper>
+        </Box>
     );
 };
 

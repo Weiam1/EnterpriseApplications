@@ -1,83 +1,92 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import {
+    Box,
+    Typography,
+    Grid,
+    Card,
+    CardContent,
+    CardActions,
+    Button,
+    Select,
+    MenuItem
+} from "@mui/material";
 
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
 
-    const fetchProducts = async () => {
-        const response = await axiosClient.get("/products");
-        setProducts(response.data);
-    };
-
-    const fetchCategories = async () => {
-        const response = await axiosClient.get("/categories");
-        setCategories(response.data);
-    };
+    useEffect(() => {
+        axiosClient.get("/products").then(res => setProducts(res.data));
+        axiosClient.get("/categories").then(res => setCategories(res.data));
+    }, []);
 
     const handleCategoryChange = async (categoryId) => {
         setSelectedCategory(categoryId);
-
         if (categoryId === "all") {
-            fetchProducts();
+            const res = await axiosClient.get("/products");
+            setProducts(res.data);
         } else {
-            const response = await axiosClient.get(
-                `/products/category/${categoryId}`
-            );
-            setProducts(response.data);
+            const res = await axiosClient.get(`/products/category/${categoryId}`);
+            setProducts(res.data);
         }
     };
 
-    const handleAddToCart = async (productId) => {
-        try {
-            await axiosClient.post(
-                `/cart/add?productId=${productId}&quantity=1`
-            );
-            alert("Product added to cart");
-        } catch (error) {
-            console.error(error);
-            alert("You must be logged in");
-        }
+    const addToCart = async (productId) => {
+        await axiosClient.post(`/cart/add?productId=${productId}&quantity=1`);
+        alert("Product added to cart");
     };
-
-    useEffect(() => {
-        const loadData = async () => {
-            await fetchProducts();
-            await fetchCategories();
-        };
-
-        loadData();
-    }, []);
 
     return (
-        <div>
-            <h2>Product Catalog</h2>
+        <Box sx={{ padding: 6 }}>
+            <Typography variant="h3" fontWeight="bold" mb={4}>
+                Product Catalog
+            </Typography>
 
-            <select
+            <Select
                 value={selectedCategory}
                 onChange={(e) => handleCategoryChange(e.target.value)}
+                sx={{ mb: 5, fontSize: "18px", minWidth: 240 }}
             >
-                <option value="all">All categories</option>
-                {categories.map((cat) => (
-                    <option key={cat.id} value={cat.id}>
+                <MenuItem value="all">All Categories</MenuItem>
+                {categories.map(cat => (
+                    <MenuItem key={cat.id} value={cat.id}>
                         {cat.name}
-                    </option>
+                    </MenuItem>
                 ))}
-            </select>
+            </Select>
 
-            <ul>
-                {products.map((p) => (
-                    <li key={p.id}>
-                        <strong>{p.name}</strong> – €{p.price}
-                        <br />
-                        <button onClick={() => handleAddToCart(p.id)}>
-                            Add to cart
-                        </button>
-                    </li>
+            <Grid container spacing={4}>
+                {products.map(product => (
+                    <Grid item xs={12} sm={6} md={4} key={product.id}>
+                        <Card sx={{ height: "100%", borderRadius: "18px" }}>
+                            <CardContent>
+                                <Typography variant="h5" fontWeight="bold">
+                                    {product.name}
+                                </Typography>
+
+                                <Typography variant="h6" mt={2}>
+                                    € {product.price}
+                                </Typography>
+                            </CardContent>
+
+                            <CardActions sx={{ padding: 2 }}>
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    fullWidth
+                                    onClick={() => addToCart(product.id)}
+                                    sx={{ fontSize: "16px" }}
+                                >
+                                    Add to Cart
+                                </Button>
+                            </CardActions>
+                        </Card>
+                    </Grid>
                 ))}
-            </ul>
-        </div>
+            </Grid>
+        </Box>
     );
 };
 

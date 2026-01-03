@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 
-function Navbar() {
+const Navbar = () => {
     const navigate = useNavigate();
     const isLoggedIn = !!localStorage.getItem("token");
 
@@ -11,32 +12,87 @@ function Navbar() {
     };
 
     return (
-        <nav style={{
-            padding: "16px",
-            backgroundColor: "#1976d2",
-            color: "white",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-        }}>
-            <h2>Equipment Rental</h2>
+        <AppBar
+            position="static"
+            elevation={1}
+            sx={{
+                backgroundColor: "#8FB9A8",
+                paddingY: 1.5
+            }}
+        >
+            <Toolbar
+                sx={{
+                    width: "100%",
+                    paddingX: { xs: 3, md: 8 },
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}
+            >
+                {/* Title — ممتاز، لا تغيير */}
+                <Typography
+                    variant="h4"
+                    sx={{
+                        fontWeight: 700,
+                        color: "#2F3E3A",
+                        letterSpacing: "0.5px"
+                    }}
+                >
+                    Equipment Rental
+                </Typography>
 
-            <div style={{ display: "flex", gap: "15px" }}>
-                <Link to="/products" style={{ color: "white" }}>Products</Link>
-                <Link to="/cart" style={{ color: "white" }}>Cart</Link>
+                {/* Buttons — تحريك بسيط لليسار */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 2.5,
+                        alignItems: "center",
+                        mr: { xs: 5, md: 10 } // 👈 هذا هو التعديل الوحيد المهم
+                    }}
+                >
+                    <Button component={Link} to="/" sx={navButtonStyle}>
+                        Home
+                    </Button>
 
-                {!isLoggedIn && (
-                    <Link to="/login" style={{ color: "white" }}>Login</Link>
-                )}
+                    <Button component={Link} to="/products" sx={navButtonStyle}>
+                        Products
+                    </Button>
 
-                {isLoggedIn && (
-                    <button onClick={handleLogout}>
-                        Logout
-                    </button>
-                )}
-            </div>
-        </nav>
+                    <Button component={Link} to="/cart" sx={navButtonStyle}>
+                        Cart
+                    </Button>
+
+                    {!isLoggedIn && (
+                        <Button component={Link} to="/login" sx={navButtonStyle}>
+                            Login
+                        </Button>
+                    )}
+
+                    {isLoggedIn && (
+                        <Button onClick={handleLogout} sx={navButtonStyle}>
+                            Logout
+                        </Button>
+                    )}
+                </Box>
+            </Toolbar>
+        </AppBar>
     );
-}
+};
+
+const navButtonStyle = {
+    backgroundColor: "#E8E2D6",
+    color: "#2F3E3A",
+    fontSize: "16px",
+    paddingX: 3,
+    paddingY: 1,
+    borderRadius: "10px",
+    textTransform: "none",
+    boxShadow: "none",
+    "&:hover": {
+        backgroundColor: "#DDD6C8",
+        boxShadow: "none"
+    }
+};
+
 
 export default Navbar;

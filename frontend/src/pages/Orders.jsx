@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import {
+    Box,
+    Typography,
+    Paper
+} from "@mui/material";
 
 const Orders = () => {
 
@@ -19,18 +24,30 @@ const Orders = () => {
     }, []);
 
     return (
-        <div style={{ padding: "40px" }}>
-            <h1>Your Orders</h1>
+        <Box sx={{ padding: 6 }}>
+            <Typography variant="h3" fontWeight="bold" mb={4}>
+                Your Orders
+            </Typography>
 
-            {orders.length === 0 && <p>No orders yet.</p>}
+            {orders.length === 0 && (
+                <Typography>No orders yet.</Typography>
+            )}
 
             {orders.map(order => (
-                <div key={order.orderId}>
-                    <h4>Order #{order.orderId}</h4>
-                    <p>Total: €{order.totalPrice}</p>
-                </div>
+                <Paper
+                    key={order.orderId}
+                    sx={{ padding: 4, mb: 3, borderRadius: "16px" }}
+                >
+                    <Typography variant="h5">
+                        Order #{order.orderId}
+                    </Typography>
+
+                    <Typography variant="h6" mt={1}>
+                        Total: € {order.totalPrice}
+                    </Typography>
+                </Paper>
             ))}
-        </div>
+        </Box>
     );
 };
 
