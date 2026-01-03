@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import {
+    Box,
+    Typography,
+    Paper,
+    Button,
+    TextField,
+    Stack,
+    Divider
+} from "@mui/material";
 
 const Cart = () => {
     const [cart, setCart] = useState(null);
@@ -9,6 +18,7 @@ const Cart = () => {
         setCart(response.data);
     };
     const updateQuantity = async (itemId, quantity) => {
+        if (quantity < 1) return;
         await axiosClient.put(
             `/cart/update?itemId=${itemId}&quantity=${quantity}`
         );
@@ -33,7 +43,13 @@ const Cart = () => {
     }, []);
 
     if (!cart || !cart.items || cart.items.length === 0) {
-        return <h2>Your cart is empty</h2>;
+        return (
+            <Box sx={{ padding: 6 }}>
+                <Typography variant="h4">
+                    Your cart is empty
+                </Typography>
+            </Box>
+        );
     }
 
     const total = cart.items.reduce(
@@ -42,35 +58,136 @@ const Cart = () => {
     );
 
     return (
-        <div>
-            <h2>Your Cart</h2>
 
-            <ul>
+        <Box
+            sx={{
+                padding: 6,
+                maxWidth: "1000px",
+                margin: "0 auto"
+            }}
+        >
+            <Typography
+                variant="h3"
+                sx={{ mb: 4, fontWeight: "bold" }}
+            >
+                🛒 Your Cart
+            </Typography>
+
+            <Stack spacing={3}>
                 {cart.items.map((item) => (
-                    <li key={item.id}>
-                        <strong>{item.product.name}</strong>
-                        <br />
-                        €{item.priceAtThatTime} ×
-                        <input
-                            type="number"
-                            value={item.quantity}
-                            min="1"
-                            onChange={(e) =>
-                                updateQuantity(
-                                    item.id,
-                                    Number(e.target.value)
-                                )
-                            }
-                        />
-                        <button onClick={() => removeItem(item.id)}>
-                            Remove
-                        </button>
-                    </li>
-                ))}
-            </ul>
+                    <Paper
+                        key={item.id}
+                        sx={{
+                            padding: 3,
+                            backgroundColor: "#FFFFFF",
+                            borderRadius: "16px"
+                        }}
+                        elevation={3}
+                    >
+                        <Stack
+                            direction={{ xs: "column", md: "row" }}
+                            spacing={4}
+                            alignItems="center"
+                            justifyContent="space-between"
+                        >
+                            {/* Product Info */}
+                            <Box sx={{ flex: 1 }}>
+                                <Typography
+                                    variant="h5"
+                                    sx={{ fontWeight: "bold" }}
+                                >
+                                    {item.product.name}
+                                </Typography>
 
-            <h3>Total: €{total}</h3>
-        </div>
+                                <Typography
+                                    variant="h6"
+                                    color="text.secondary"
+                                    sx={{ mt: 1 }}
+                                >
+                                    € {item.priceAtThatTime}
+                                </Typography>
+                            </Box>
+
+                            {/* Quantity */}
+                            <TextField
+                                type="number"
+                                label="Quantity"
+                                value={item.quantity}
+                                onChange={(e) =>
+                                    updateQuantity(
+                                        item.id,
+                                        Number(e.target.value)
+                                    )
+                                }
+                                inputProps={{
+                                    min: 1,
+                                    style: { fontSize: "20px" }
+                                }}
+                                sx={{
+                                    width: "140px"
+                                }}
+                            />
+
+                            {/* Remove Button */}
+                            <Button
+                                variant="contained"
+                                color="error"
+                                size="large"
+                                onClick={() => removeItem(item.id)}
+                                sx={{
+                                    height: "56px",
+                                    fontSize: "16px"
+                                }}
+                            >
+                                Remove
+                            </Button>
+                        </Stack>
+                    </Paper>
+                ))}
+            </Stack>
+
+            <Divider sx={{ my: 5 }} />
+
+            {/* Total */}
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center"
+                }}
+            >
+                <Typography
+                    variant="h4"
+                    sx={{ fontWeight: "bold" }}
+                >
+                    Total:
+                </Typography>
+
+                <Typography
+                    variant="h4"
+                    sx={{ fontWeight: "bold" }}
+                >
+                    € {total.toFixed(2)}
+                </Typography>
+            </Box>
+
+            {/* Checkout */}
+            <Box sx={{ mt: 4, textAlign: "right" }}>
+                <Button
+                    variant="contained"
+                    size="large"
+                    href="/checkout"
+                    sx={{
+                        paddingX: 5,
+                        paddingY: 1.5,
+                        fontSize: "18px",
+                        borderRadius: "12px"
+                    }}
+                >
+                    Proceed to Checkout
+                </Button>
+            </Box>
+        </Box>
     );
 };
 export default Cart;
