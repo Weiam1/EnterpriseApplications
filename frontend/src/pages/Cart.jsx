@@ -17,8 +17,10 @@ const Cart = () => {
 
     const removeItem = async (itemId) => {
         await axiosClient.delete(`/cart/remove/${itemId}`);
-        fetchCart();
+        const response = await axiosClient.get("/cart");
+        setCart(response.data);
     };
+
 
 
     useEffect(() => {
