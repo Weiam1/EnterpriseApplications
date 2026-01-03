@@ -1,6 +1,7 @@
 package ehb.be.enterpriseapplications.controller;
 
 import ehb.be.enterpriseapplications.dto.LoginRequest;
+import ehb.be.enterpriseapplications.dto.LoginResponse;
 import ehb.be.enterpriseapplications.dto.UserRegisterRequest;
 import ehb.be.enterpriseapplications.model.User;
 import ehb.be.enterpriseapplications.service.AuthService;
@@ -12,12 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")  // React frontend
 public class AuthController {
 
     private final UserService userService;
-    private final AuthService authService;
 
+    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRegisterRequest request) {
@@ -37,8 +37,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         try {
-            String token = authService.login(request);
-            return ResponseEntity.ok(token);
+            LoginResponse response = authService.login(request);
+            return ResponseEntity.ok(response);
+
         } catch (RuntimeException e) {
             return ResponseEntity.status(401).body(e.getMessage());
         }

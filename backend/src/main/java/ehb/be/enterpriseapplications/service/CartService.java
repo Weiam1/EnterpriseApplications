@@ -1,16 +1,17 @@
 package ehb.be.enterpriseapplications.service;
 
 import ehb.be.enterpriseapplications.model.Cart;
+import ehb.be.enterpriseapplications.model.User;
 
 public interface CartService {
 
-    Cart getCartByUser(Long userId);
+    Cart getCartByUser(User user);
 
-    Cart addToCart(Long userId, Long productId, int quantity);
+    Cart addToCart(User user, Long productId, int quantity);
 
-    Cart updateQuantity(Long userId, Long itemId, int quantity);
+    Cart updateQuantity(User user, Long itemId, int quantity);
 
-    void removeItem(Long userId, Long itemId);
+    void removeItem(User user, Long itemId);
 
-    void clearCart(Long userId);
+    void clearCart(User user);
 }

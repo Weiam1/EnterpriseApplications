@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -30,36 +31,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        String path = request.getServletPath();
 
-        // If no header or doesn't start with Bearer → skip
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // Allow public & preflight
+        if (
+                request.getMethod().equals("OPTIONS") ||
+                        path.startsWith("/api/auth") ||
+                        path.startsWith("/api/products") ||
+                        path.startsWith("/api/categories")
+        ) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
-        String email = jwtUtil.extractEmail(token);
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        // If user not authenticated yet
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
 
-            var user = userRepository.findByEmail(email).orElse(null);
+            try {
+                String email = jwtUtil.extractEmail(token);
 
-            if (user != null && jwtUtil.isTokenValid(token, email)) {
+                if (email != null &&
+                        SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UsernamePasswordAuthenticationToken authToken =
-                        new UsernamePasswordAuthenticationToken(
-                                user,
-                                null,
-                                null // we can add roles later
+                    var user = userRepository.findByEmail(email).orElse(null);
+
+                    if (user != null && jwtUtil.isTokenValid(token, email)) {
+
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        user,
+                                        null,
+                                        List.of()
+                                );
+
+                        authToken.setDetails(
+                                new WebAuthenticationDetailsSource().buildDetails(request)
                         );
 
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                }
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            } catch (Exception ignored) {
+                // Invalid token → user stays unauthenticated
             }
         }
 

@@ -2,6 +2,7 @@ package ehb.be.enterpriseapplications.service.impl;
 
 import ehb.be.enterpriseapplications.config.JwtUtil;
 import ehb.be.enterpriseapplications.dto.LoginRequest;
+import ehb.be.enterpriseapplications.dto.LoginResponse;
 import ehb.be.enterpriseapplications.model.User;
 import ehb.be.enterpriseapplications.repository.UserRepository;
 import ehb.be.enterpriseapplications.service.AuthService;
@@ -18,7 +19,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password."));
@@ -27,6 +28,12 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Invalid email or password.");
         }
 
-        return jwtUtil.generateToken(user.getEmail());
+        String token = jwtUtil.generateToken(user.getEmail());
+
+        return new LoginResponse(
+                token,
+                user.getId(),
+                user.getEmail()
+        );
     }
 }
