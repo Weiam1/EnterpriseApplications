@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 
+
 const Navbar = () => {
     const navigate = useNavigate();
     const isLoggedIn = !!localStorage.getItem("token");
@@ -29,7 +30,7 @@ const Navbar = () => {
                     alignItems: "center"
                 }}
             >
-                {/* Title — ممتاز، لا تغيير */}
+
                 <Typography
                     variant="h4"
                     sx={{
@@ -41,19 +42,21 @@ const Navbar = () => {
                     Equipment Rental
                 </Typography>
 
-                {/* Buttons — تحريك بسيط لليسار */}
+
                 <Box
                     sx={{
                         display: "flex",
                         gap: 2.5,
                         alignItems: "center",
-                        mr: { xs: 5, md: 10 } // 👈 هذا هو التعديل الوحيد المهم
+                        mr: { xs: 5, md: 10 }
                     }}
                 >
                     <Button component={Link} to="/" sx={navButtonStyle}>
                         Home
                     </Button>
 
+                    {isLoggedIn && (
+                        <>
                     <Button component={Link} to="/products" sx={navButtonStyle}>
                         Products
                     </Button>
@@ -61,11 +64,19 @@ const Navbar = () => {
                     <Button component={Link} to="/cart" sx={navButtonStyle}>
                         Cart
                     </Button>
-
+                        </>
+                    )}
                     {!isLoggedIn && (
+                        <>
                         <Button component={Link} to="/login" sx={navButtonStyle}>
                             Login
                         </Button>
+
+                        <Button component={Link} to="/register" sx={navButtonStyle}>
+                    Register
+
+                </Button>
+                        </>
                     )}
 
 
@@ -74,11 +85,7 @@ const Navbar = () => {
                             Logout
                         </Button>
                     )}
-                    {!isLoggedIn && (
-                        <Button component={Link} to="/register" sx={navButtonStyle}>
-                            Register
-                        </Button>
-                    )}
+
 
                 </Box>
             </Toolbar>
