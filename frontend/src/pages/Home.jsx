@@ -1,7 +1,8 @@
 import { Box, Typography, Button, Paper, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+    const navigate = useNavigate();
     const isLoggedIn = !!localStorage.getItem("token");
 
     return (
@@ -72,8 +73,6 @@ const Home = () => {
                     {/* Action Buttons */}
                     <Stack direction="row" spacing={3}>
                         <Button
-                            component={Link}
-                            to="/products"
                             variant="contained"
                             size="large"
                             sx={{
@@ -82,26 +81,17 @@ const Home = () => {
                                 paddingY: 1.5,
                                 borderRadius: "12px"
                             }}
+                            onClick={() => {
+                                if (isLoggedIn) {
+                                    navigate("/products");   // ✅ مستخدم مسجّل
+                                } else {
+                                    navigate("/login");      // 🔒 غير مسجّل
+                                }
+                            }}
                         >
                             Browse Products
                         </Button>
 
-                        {!isLoggedIn && (
-                            <Button
-                                component={Link}
-                                to="/login"
-                                variant="outlined"
-                                size="large"
-                                sx={{
-                                    fontSize: "18px",
-                                    paddingX: 5,
-                                    paddingY: 1.5,
-                                    borderRadius: "12px"
-                                }}
-                            >
-                                Login
-                            </Button>
-                        )}
                     </Stack>
                 </Stack>
             </Paper>
