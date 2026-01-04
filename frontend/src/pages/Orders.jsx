@@ -3,11 +3,12 @@ import axiosClient from "../api/axiosClient";
 import {
     Box,
     Typography,
-    Paper
+    Paper,
+    Divider,
+    Stack
 } from "@mui/material";
 
 const Orders = () => {
-
     const [orders, setOrders] = useState([]);
 
     useEffect(() => {
@@ -24,7 +25,7 @@ const Orders = () => {
     }, []);
 
     return (
-        <Box sx={{ padding: 6 }}>
+        <Box sx={{ padding: 6, maxWidth: "900px", margin: "0 auto" }}>
             <Typography variant="h3" fontWeight="bold" mb={4}>
                 Your Orders
             </Typography>
@@ -36,15 +37,28 @@ const Orders = () => {
             {orders.map(order => (
                 <Paper
                     key={order.orderId}
-                    sx={{ padding: 4, mb: 3, borderRadius: "16px" }}
+                    sx={{ padding: 4, mb: 4, borderRadius: "16px" }}
+                    elevation={3}
                 >
-                    <Typography variant="h5">
+                    {/* Order Header */}
+                    <Typography variant="h5" fontWeight="bold">
                         Order #{order.orderId}
                     </Typography>
 
-                    <Typography variant="h6" mt={1}>
-                        Total: € {order.totalPrice}
+                    <Typography variant="h6" mt={1} mb={2}>
+                        Total: € {order.totalPrice.toFixed(2)}
                     </Typography>
+
+                    <Divider sx={{ my: 2 }} />
+
+                    {/* 🔹 هنا التعديل المهم: عرض المنتجات */}
+                    <Stack spacing={1}>
+                        {order.items.map((item, index) => (
+                            <Typography key={index} variant="body1">
+                                • {item.productName} — {item.quantity} × € {item.price}
+                            </Typography>
+                        ))}
+                    </Stack>
                 </Paper>
             ))}
         </Box>

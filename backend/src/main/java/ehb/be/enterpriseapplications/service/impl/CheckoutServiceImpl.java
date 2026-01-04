@@ -1,10 +1,7 @@
 package ehb.be.enterpriseapplications.service.impl;
 
 import ehb.be.enterpriseapplications.dto.CheckoutResponse;
-import ehb.be.enterpriseapplications.model.Cart;
-import ehb.be.enterpriseapplications.model.CartItem;
-import ehb.be.enterpriseapplications.model.Order;
-import ehb.be.enterpriseapplications.model.OrderItem;
+import ehb.be.enterpriseapplications.model.*;
 import ehb.be.enterpriseapplications.repository.CartRepository;
 import ehb.be.enterpriseapplications.repository.OrderItemRepository;
 import ehb.be.enterpriseapplications.repository.OrderRepository;
@@ -23,10 +20,10 @@ public class CheckoutServiceImpl implements CheckoutService {
     private final OrderItemRepository orderItemRepository;
 
     @Override
-    public CheckoutResponse checkout(Long userId) {
+    public CheckoutResponse checkout(User user) {
 
         // 1. Get user's cart
-        Cart cart = cartRepository.findByUserId(userId).orElse(null);
+        Cart cart = cartRepository.findByUser(user).orElse(null);
 
 
         if (cart == null || cart.getItems().isEmpty()) {
@@ -35,7 +32,7 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // 2. Create new Order
         Order order = new Order();
-        order.setUserId(userId);
+        order.setUser(user);
         order.setCreatedAt(LocalDateTime.now());
         order.setTotalPrice(0.0);
 
