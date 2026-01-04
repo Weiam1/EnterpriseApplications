@@ -25,10 +25,17 @@ const Cart = () => {
         fetchCart();
     };
 
-    const removeItem = async (itemId) => {
-        await axiosClient.delete(`/cart/remove/${itemId}`);
-        const response = await axiosClient.get("/cart");
-        setCart(response.data);
+    const removeItem = async (item) => {
+        if (item.quantity > 1) {
+            // ➖ إنقاص قطعة واحدة فقط
+            await axiosClient.put(
+                `/cart/update?itemId=${item.id}&quantity=${item.quantity - 1}`
+            );
+        } else {
+            // 🗑️ آخر قطعة → حذف كامل
+            await axiosClient.delete(`/cart/remove?itemId=${item.id}`);
+        }
+        fetchCart(); // نعيد تحميل السلة
     };
 
 
@@ -133,7 +140,7 @@ const Cart = () => {
                                 variant="contained"
                                 color="error"
                                 size="large"
-                                onClick={() => removeItem(item.id)}
+                                onClick={() => removeItem(item)}
                                 sx={{
                                     height: "56px",
                                     fontSize: "16px"
