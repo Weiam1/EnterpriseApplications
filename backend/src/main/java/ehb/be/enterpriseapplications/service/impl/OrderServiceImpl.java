@@ -1,10 +1,7 @@
 package ehb.be.enterpriseapplications.service.impl;
 
 import ehb.be.enterpriseapplications.dto.OrderResponse;
-import ehb.be.enterpriseapplications.model.Cart;
-import ehb.be.enterpriseapplications.model.CartItem;
-import ehb.be.enterpriseapplications.model.Order;
-import ehb.be.enterpriseapplications.model.OrderItem;
+import ehb.be.enterpriseapplications.model.*;
 import ehb.be.enterpriseapplications.repository.CartItemRepository;
 import ehb.be.enterpriseapplications.repository.CartRepository;
 import ehb.be.enterpriseapplications.repository.OrderItemRepository;
@@ -30,8 +27,8 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Override
-    public Order createOrder(Long userId) {
-        Cart cart = cartRepository.findByUserId(userId)
+    public Order createOrder(User user) {
+        Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
 
         if (cart.getItems().isEmpty()) {
@@ -39,7 +36,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         Order order = new Order();
-        order.setUserId(userId);
+        order.setUser(user);
         order.setCreatedAt(LocalDateTime.now());
         order.setTotalPrice(0.0);
 

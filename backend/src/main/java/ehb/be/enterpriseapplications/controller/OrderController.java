@@ -18,8 +18,12 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/create")
-    public OrderResponse createOrder(@RequestParam Long userId) {
-        Order order = orderService.createOrder(userId);
+    public OrderResponse createOrder(Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+
+        Order order = orderService.createOrder(user);
+
         return mapToResponse(order);
     }
 

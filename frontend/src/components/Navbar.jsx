@@ -64,8 +64,12 @@ const Navbar = () => {
                     <Button component={Link} to="/cart" sx={navButtonStyle}>
                         Cart
                     </Button>
+                            <Button component={Link} to="/orders" sx={navButtonStyle}>
+                                Orders
+                            </Button>
                         </>
                     )}
+
                     {!isAuthenticated && (
                         <>
                         <Button component={Link} to="/login" sx={navButtonStyle}>
