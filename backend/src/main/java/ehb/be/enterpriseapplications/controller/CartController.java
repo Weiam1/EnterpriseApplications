@@ -9,6 +9,7 @@ import ehb.be.enterpriseapplications.model.User;
 import org.springframework.security.core.Authentication;
 
 import java.security.Principal;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/api/cart")
@@ -29,19 +30,15 @@ public class CartController {
     public ResponseEntity<Cart> addToCart(
             Authentication authentication,
             @RequestParam Long productId,
-            @RequestParam(defaultValue = "1") int quantity
+            @RequestParam(defaultValue = "1") int quantity,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate
     ) {
-
-        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
-            return ResponseEntity.status(401).build();
-        }
-
         User user = (User) authentication.getPrincipal();
-
-
         return ResponseEntity.ok(
-                cartService.addToCart(user, productId, quantity)
+                cartService.addToCart(user, productId, quantity, startDate, endDate)
         );
+
     }
 
 

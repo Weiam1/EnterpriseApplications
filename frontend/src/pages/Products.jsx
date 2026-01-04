@@ -10,7 +10,7 @@ import {
     Button,
     Select,
     MenuItem,
-    Paper
+    TextField
 } from "@mui/material";
 import { useNavigate } from "react-router-dom"; // 🔹 جديد
 
@@ -24,6 +24,9 @@ const Products = () => {
     const [addedProduct, setAddedProduct] = useState(null);
 
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState(""); // 🔍 zoekfunctie
+    const [startDates, setStartDates] = useState({});
+    const [endDates, setEndDates] = useState({});
 
     useEffect(() => {
         axiosClient.get("/products").then(res => setProducts(res.data));
@@ -43,16 +46,29 @@ const Products = () => {
 
     const addToCart = async (productId) => {
         const quantity = quantities[productId] || 1;
+        const startDate = startDates[productId];   // 🔹 NEW
+        const endDate = endDates[productId];       // 🔹 NEW
+
+        // 🔹 NEW: تحقق بسيط قبل الإرسال
+        if (!startDate || !endDate) {
+            alert("Please select start and end date");
+            return;
+        }
+
         await axiosClient.post(
-            `/cart/add?productId=${productId}&quantity=${quantity}`);
-        setAddedProduct(productId);
+            `/cart/add?productId=${productId}&quantity=${quantity}&startDate=${startDate}&endDate=${endDate}`
+        );
+
+        setAddedProduct(productId); // ✅ إظهار نافذة التأكيد
     };
+
 
     return (
         <Box sx={{ padding: 6 }}>
             <Typography variant="h3" fontWeight="bold" mb={4}>
                 Product Catalog
             </Typography>
+
 
 
                 {/* 🔹 Feedback Box بعد الإضافة */}
@@ -118,10 +134,23 @@ const Products = () => {
                     </MenuItem>
                 ))}
             </Select>
+            <TextField
+                label="Search product"
+                variant="outlined"
+                fullWidth
+                sx={{ mb: 4, maxWidth: 400 }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
 
             <Grid container spacing={4}>
-                {products.map(product => (
-                    <Grid item xs={12} sm={6} md={4} key={product.id}>
+                {products
+                    .filter(product =>
+                        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map(product => (
+
+                        <Grid item xs={12} sm={6} md={4} key={product.id}>
                         <Card sx={{ height: "100%", borderRadius: "18px" }}>
                             <CardContent>
                                 <Typography variant="h5" fontWeight="bold">
@@ -131,6 +160,37 @@ const Products = () => {
                                 <Typography variant="h6" mt={2}>
                                     € {product.price}
                                 </Typography>
+
+                                <TextField
+                                    type="date"
+                                    label="Start date"
+                                    InputLabelProps={{ shrink: true }}
+                                    fullWidth
+                                    sx={{ mt: 3 }}
+                                    value={startDates[product.id] || ""}
+                                    onChange={(e) =>
+                                        setStartDates({
+                                            ...startDates,
+                                            [product.id]: e.target.value
+                                        })
+                                    }
+                                />
+
+                                <TextField
+                                    type="date"
+                                    label="End date"
+                                    InputLabelProps={{ shrink: true }}
+                                    fullWidth
+                                    sx={{ mt: 2 }}
+                                    value={endDates[product.id] || ""}
+                                    onChange={(e) =>
+                                        setEndDates({
+                                            ...endDates,
+                                            [product.id]: e.target.value
+                                        })
+                                    }
+                                />
+
 
                                 <Select
                                     fullWidth
