@@ -7,8 +7,15 @@ import {
     Button,
     Paper
 } from "@mui/material";
+import { useAuth } from "../auth/AuthContext";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
+
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(null);
@@ -25,10 +32,9 @@ const Login = () => {
 
             const { token, userId } = response.data;
 
-            localStorage.setItem("token", token);
-            localStorage.setItem("userId", userId);
+            login(token, userId);
+            navigate("/");
 
-            alert("Login successful");
 
         } catch (err) {
             console.error(err);
