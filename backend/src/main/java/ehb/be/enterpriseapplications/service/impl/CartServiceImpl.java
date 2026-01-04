@@ -12,6 +12,7 @@ import ehb.be.enterpriseapplications.service.CartService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 
@@ -42,28 +43,37 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
+    public Cart addToCart(
+            User user,
+            Long productId,
+            int quantity,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
 
-        public Cart addToCart(User user, Long productId, int quantity) {
-
-        // 1️⃣ تأكد أن الـ Cart محفوظ وله ID
+        // 1️⃣ جلب أو إنشاء Cart
         Cart cart = cartRepository.findByUser(user)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
                     newCart.setUser(user);
                     return cartRepository.saveAndFlush(newCart);
                 });
+
         if (cart.getItems() == null) {
             cart.setItems(new ArrayList<>());
         }
 
-
-        // 2️⃣ المنتج
+        // 2️⃣ جلب المنتج
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        // 3️⃣ هل العنصر موجود؟
+        // 3️⃣ هل المنتج موجود بنفس الفترة؟
         CartItem item = cart.getItems().stream()
-                .filter(i -> i.getProduct().getId().equals(productId))
+                .filter(i ->
+                        i.getProduct().getId().equals(productId)
+                                && i.getStartDate().equals(startDate)
+                                && i.getEndDate().equals(endDate)
+                )
                 .findFirst()
                 .orElse(null);
 
@@ -74,14 +84,16 @@ public class CartServiceImpl implements CartService {
             item.setQuantity(quantity);
             item.setPriceAtThatTime(product.getPrice());
 
+            // 🆕 الفترة
+            item.setStartDate(startDate);
+            item.setEndDate(endDate);
+
             cart.getItems().add(item);
         } else {
             item.setQuantity(item.getQuantity() + quantity);
         }
 
-        // 4️⃣ احفظ cart (Cascade يحفظ items)
         return cartRepository.saveAndFlush(cart);
-
     }
 
 

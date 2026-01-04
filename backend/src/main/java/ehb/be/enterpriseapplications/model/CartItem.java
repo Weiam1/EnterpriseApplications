@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "cart_items")
 @Data
@@ -29,4 +31,7 @@ public class CartItem {
 
     // price of the product at the moment of adding
     private double priceAtThatTime;
+    private LocalDate startDate;
+    private LocalDate endDate;
+
 }
