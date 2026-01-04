@@ -68,11 +68,18 @@ const Navbar = () => {
                         </Button>
                     )}
 
+
                     {isLoggedIn && (
                         <Button onClick={handleLogout} sx={navButtonStyle}>
                             Logout
                         </Button>
                     )}
+                    {!isLoggedIn && (
+                        <Button component={Link} to="/register" sx={navButtonStyle}>
+                            Register
+                        </Button>
+                    )}
+
                 </Box>
             </Toolbar>
         </AppBar>
