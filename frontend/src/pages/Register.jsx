@@ -33,7 +33,7 @@ const Register = () => {
             await axiosClient.post("/auth/register", form);
             alert("Registration successful. Please login.");
             navigate("/login");
-        } catch (err) {
+        } catch  {
             setError("Registration failed");
         }
     };

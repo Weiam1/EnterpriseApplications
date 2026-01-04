@@ -1,9 +1,11 @@
 import { Box, Typography, Button, Paper, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../auth/useAuth";
 
 const Home = () => {
     const navigate = useNavigate();
-    const isLoggedIn = !!localStorage.getItem("token");
+    const { isAuthenticated } = useAuth();
+
 
     return (
         <Box
@@ -82,7 +84,7 @@ const Home = () => {
                                 borderRadius: "12px"
                             }}
                             onClick={() => {
-                                if (isLoggedIn) {
+                                if (isAuthenticated) {
                                     navigate("/products");   // ✅ مستخدم مسجّل
                                 } else {
                                     navigate("/login");      // 🔒 غير مسجّل

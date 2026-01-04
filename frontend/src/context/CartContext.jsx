@@ -1,6 +1,8 @@
-import { createContext, useContext, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
 
-const CartContext = createContext();
+import { createContext, useContext, useState } from "react";
+export const CartContext = createContext(null);
+
 
 
 export const CartProvider = ({ children }) => {
@@ -41,29 +43,13 @@ export const CartProvider = ({ children }) => {
     };
 
 
-    const getTotalPrice = () => {
-        return cartItems.reduce(
-            (total, item) => total + item.product.price * item.quantity,
-            0
-        );
-    };
+
 
     return (
-        <CartContext.Provider
-            value={{
-                cartItems,
-                addToCart,
-                removeFromCart,
-                clearCart,
-                getTotalPrice,
-            }}
-        >
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
             {children}
         </CartContext.Provider>
     );
 };
 
-
-export const useCart = () => {
-    return useContext(CartContext);
-};
+export const useCart = () => useContext(CartContext);

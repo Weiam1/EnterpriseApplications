@@ -1,14 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-
+import { useAuth } from "../auth/AuthContext";
 
 const Navbar = () => {
     const navigate = useNavigate();
-    const isLoggedIn = !!localStorage.getItem("token");
+
+    const { isAuthenticated, logout } = useAuth();
 
     const handleLogout = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
+        logout();            // 🔥 هذا هو المهم
         navigate("/login");
     };
 
@@ -55,7 +55,7 @@ const Navbar = () => {
                         Home
                     </Button>
 
-                    {isLoggedIn && (
+                    {isAuthenticated && (
                         <>
                     <Button component={Link} to="/products" sx={navButtonStyle}>
                         Products
@@ -66,7 +66,7 @@ const Navbar = () => {
                     </Button>
                         </>
                     )}
-                    {!isLoggedIn && (
+                    {!isAuthenticated && (
                         <>
                         <Button component={Link} to="/login" sx={navButtonStyle}>
                             Login
@@ -80,7 +80,7 @@ const Navbar = () => {
                     )}
 
 
-                    {isLoggedIn && (
+                    {isAuthenticated && (
                         <Button onClick={handleLogout} sx={navButtonStyle}>
                             Logout
                         </Button>
