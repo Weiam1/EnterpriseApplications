@@ -202,10 +202,3 @@ Example prompts used:
 All generated suggestions were manually reviewed, adapted, and implemented by the student.
 The student fully understands the codebase and can explain all design and implementation choices during oral evaluation.
 
-إذا حابة، في الخطوة الجاية أقدر:
-
-* أراجع الـ **rubric نقطة نقطة** وأقولك إذا في أي مخاطرة
-* أجهز لك **ملخص شفهي** للدفاع/الشرح
-* أكتب **commit history نظيف** لو حابة ترتبيه قبل التسليم
-
-قولي شو بدك نعمل بعدها 👍
