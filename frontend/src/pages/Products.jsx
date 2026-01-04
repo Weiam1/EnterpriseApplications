@@ -9,13 +9,21 @@ import {
     CardActions,
     Button,
     Select,
-    MenuItem
+    MenuItem,
+    Paper
 } from "@mui/material";
+import { useNavigate } from "react-router-dom"; // 🔹 جديد
+
 
 const Products = () => {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("all");
+
+    const [quantities, setQuantities] = useState({});
+    const [addedProduct, setAddedProduct] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         axiosClient.get("/products").then(res => setProducts(res.data));
@@ -34,8 +42,10 @@ const Products = () => {
     };
 
     const addToCart = async (productId) => {
-        await axiosClient.post(`/cart/add?productId=${productId}&quantity=1`);
-        alert("Product added to cart");
+        const quantity = quantities[productId] || 1;
+        await axiosClient.post(
+            `/cart/add?productId=${productId}&quantity=${quantity}`);
+        setAddedProduct(productId);
     };
 
     return (
@@ -43,6 +53,58 @@ const Products = () => {
             <Typography variant="h3" fontWeight="bold" mb={4}>
                 Product Catalog
             </Typography>
+
+
+                {/* 🔹 Feedback Box بعد الإضافة */}
+            {addedProduct && (
+                <Box
+                    sx={{
+                        position: "fixed",        // 🔹 يجعلها فوق الصفحة
+                        top: 0,
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "rgba(0,0,0,0.35)", // 🔹 خلفية شفافة
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: 1300              // 🔹 فوق كل شيء
+                    }}
+                >
+                    <Box
+                        sx={{
+                            backgroundColor: "#FFFFFF",
+                            padding: 4,
+                            borderRadius: "16px",
+                            minWidth: "320px",
+                            textAlign: "center",
+                            boxShadow: 6
+                        }}
+                    >
+                        <Typography variant="h6" mb={3}>
+                            ✅ Product added to cart
+                        </Typography>
+
+                        <Button
+                            variant="contained"
+                            fullWidth
+                            sx={{ mb: 2 }}
+                            onClick={() => navigate("/cart")}
+                        >
+                            Go to Cart
+                        </Button>
+
+                        <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={() => setAddedProduct(null)} // 🔹 يغلق النافذة فقط
+                        >
+                            Add more products
+                        </Button>
+                    </Box>
+                </Box>
+            )}
+
 
             <Select
                 value={selectedCategory}
@@ -69,6 +131,26 @@ const Products = () => {
                                 <Typography variant="h6" mt={2}>
                                     € {product.price}
                                 </Typography>
+
+                                <Select
+                                    fullWidth
+                                    value={quantities[product.id] || 1}
+                                    onChange={(e) =>
+                                        setQuantities({
+                                            ...quantities,
+                                            [product.id]: e.target.value
+                                        })
+                                    }
+                                    sx={{ mt: 3 }}
+                                >
+                                    {[1,2,3,4,5].map(q => (
+                                        <MenuItem key={q} value={q}>
+                                            {q}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+
+
                             </CardContent>
 
                             <CardActions sx={{ padding: 2 }}>
